@@ -1,0 +1,101 @@
+[
+  {
+    "v4request": {
+      "v4requestId": "receivePayment-sale-invoice-update",
+      "variables": {
+        "input_0": {
+          "clientMutationId": "0",
+          "transactionsTransaction": {
+            "id": "$runtimeData.receivePayment-sale-invoice-read-after-update.data.node.id",
+            "entityVersion": "$runtimeData.receivePayment-sale-invoice-read-after-update.data.node.entityVersion",
+            "type": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.type",
+            "header": {
+              "txnDate": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.header.txnDate",
+              "contact": {
+                "id": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.header.contact.id"
+              }
+            },
+             "lines": {
+              "itemLines": [
+                {
+                  "amount": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.amount",
+                  "traits": {
+                    "item": {
+                      "rate": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.traits.item.rate",
+                      "item": {
+                        "id": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.traits.item.item.id"
+                      }
+                    }
+                  },
+                  "description": "updated description"
+                }
+              ]
+            },
+            "traits": {
+              "invoiceDeposit": {
+                "depositAmount": "$runtimeData.depositAmount",
+                "depositToAccount": {
+                  "id": "$default.account.deposit.id"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "v4response": {
+      "assertions": [
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.description",
+          "operand": "==",
+          "value": "updated description"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.entityVersion",
+          "operand": "==",
+          "value": "1"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.id",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.type",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.type"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.header.txnDate",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.header.txnDate"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.header.contact.id",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.header.contact.id"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines",
+          "operand": "==",
+          "value": "#notnull"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.amount",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.amount"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.traits.item.rate",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.traits.item.rate"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.traits.item.item.id",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.traits.item.item.id"
+        }
+      ]
+    }
+  }
+]

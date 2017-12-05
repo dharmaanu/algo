@@ -1,0 +1,32 @@
+[
+  {
+    "v4request": {
+      "v4requestId": "sale-payment-read-after-deposit",
+      "v4headers" : {
+        "Cookie":"$runtimeData.receivePayment-sale-invoice-payment-create.Set-Cookie"
+      },
+      "variables": {
+        "id": "$runtimeData.receivePayment-sale-invoice-payment-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+      }
+    },
+    "v4response": {
+      "assertions": [
+        {
+          "path": "data.node.entityVersion",
+          "operand": "==",
+          "value": "1"
+        },
+        {
+          "path": "data.node.id",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-payment-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+        },
+        {
+          "path": "data.links.sources.edges.node.sourceTxn.header.amount",
+          "operand": "==",
+          "value": "$runtimeData.balanceAmount"
+        }       
+      ]
+    }
+  }
+]

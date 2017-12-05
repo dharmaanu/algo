@@ -1,0 +1,24 @@
+[
+  {
+    "v4request": {
+      "v4requestId": "receivePayment-sale-payment-read",
+      "variables": {
+        "id": "$runtimeData.receivePayment-sale-invoice-payment-create.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+      }
+    },
+    "v4response": {
+      "assertions": [
+        {
+          "path": "data.node.entityVersion",
+          "operand": "==",
+          "value": "0"
+        },
+        {
+          "path": "data.node.id",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-payment-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,42 @@
+Feature: Create purchase order
+  
+  Background:
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["VENDOR","ACCOUNT","ITEMS","DEPARTMENTS"] }'}
+
+  @testId=Transactions-Workflow-PO-Create-30000 @priority=p0 @entity=transaction @domain=transaction @type=purchaseorder @region=US
+  Scenario:create new with Vendor - save transaction with Expense account in the account details section and amount
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/po-create-with-account-details.json' }
+
+  @testId=Transactions-Workflow-PO-Create-30003 @priority=p0 @entity=transaction @domain=transaction @type=purchaseorder @region=US
+  Scenario:create new - add account detail line and add product service with amounts in each
+    # TODO itemline must have an amount. But that doesn't work yet because along with amount we need to pass the purchase account id of the item.Scenario. Created a overwatch issue
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/po-create-with-item-and-account-lines.json' }
+
+  @testId=Transactions-Workflow-PO-Create-30004 @priority=p0 @entity=transaction @domain=transaction @type=purchaseorder @region=US
+  Scenario:create new - add account with amount and add product/service with only quantity
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/po-create-account-with-amount-product-with-quantity.json' }
+
+  @testId=Transactions-Workflow-PO-Create-30005 @priority=p0 @entity=transaction @domain=transaction @type=purchaseorder @region=US
+  Scenario:add account with amount and add product/service with only rate
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/po-create-account-with-amount-product-with-rate.json' }
+
+  @testId=Transactions-Workflow-PO-Create-30006 @priority=p0 @entity=transaction @domain=transaction @type=purchaseorder @region=US
+  Scenario:create new - add account with amount and add product/service with only amount
+    * set session.runtimeData.setRefNumber = 1020
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/po-create-account-with-amount-product-with-amount.json' }
+
+  @testId=Transactions-Workflow-PO-Create-30016 @priority=p0 @entity=transaction @domain=transaction @type=purchaseorder @region=US
+  Scenario:Create a PO with load 100 detail lines with amounts
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/po-create-load.json' }
+
+  @testId=Transactions-Workflow-PO-Delete-30400 @priority=p0 @entity=transaction @domain=transaction @type=purchaseorder @region=US @smokes
+  Scenario:Purchase Order CRUD
+    * set session.runtimeData.setRefNumber = 1025
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/po-create-account-with-amount-product-with-amount.json' }
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/po-update.json' }
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/po-read.json' }
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/po-delete.json' }
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/po-read-after-delete.json' }
+
+
+

@@ -1,0 +1,55 @@
+Feature: Delete an invoice linked to a payment
+
+  @priority=p1 @entity=transaction @domain=transaction @type=receivepayment @region=US @testId=transactions-transaction-receivePayment-10012
+  Scenario: Delete an invoice linked to a payment
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation":["CUSTOMER","ACCOUNT","ITEMS"] }'}
+    
+    # create invoice 
+    * set session.runtimeData.type = 'SALE_INVOICE'
+    * set session.runtimeData.date = session.default.today
+    * set session.runtimeData.amount = "10.00"
+    * set session.runtimeData.rate = session.runtimeData.amount
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+    
+    # receive payment against invoice
+    # paymentmethodId is <1> <2> <3>... for Cash, check, credit card and so on. To get payment method Id, navigate to All lists > Payment Methods
+    * set session.runtimeData.paymentMethodId = "1"
+    * set session.runtimeData.amount = "10.00"
+    * set session.runtimeData.type = 'SALE_INVOICE_PAYMENT'
+    * set session.runtimeData.sourceType = 'CHARGE'
+    * set session.runtimeData.customerId = session.default.contact.customer.id
+    * set session.runtimeData.sourceTxn = session.runtimeData.transactions-create-all-fields.data.createTransactions_Transaction.transactionsTransactionEdge.node.id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-paymentMethod-sourceTxn.json' }
+    
+    # delete the invoice
+    * set session.runtimeData.id =  set session.runtimeData.sourceTxn
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-delete.json' }
+    
+    # read after delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/sale-invoice-read-after-delete.json' }
+    
+    # delete receive payment
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-delete.json' }
+    
+    
+  @priority=p1 @entity=transaction @domain=transaction @type=receivepayment @region=US @testId=transactions-transaction-receivePayment-10011
+  Scenario: Delete a payment linked to invoice and credit memo
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER","ACCOUNT","ITEMS"] }'}
+    # create invoice
+    * set session.runtimeData.invoiceAmount = "1010.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }
+        
+    # create
+    * set session.runtimeData.type = 'SALE_CREDIT'
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-credit-memo-mutation.json' }
+    
+    # receive payment against invoice
+    * set session.runtimeData.paymentAmount = "10.00"
+    * set session.runtimeData.paymentMethodId = "1" 
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }
+    
+    # delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-delete-with-payment.json' }
+    
+    # read after delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/sale-invoice-read-after-delete.json' }

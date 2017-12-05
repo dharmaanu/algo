@@ -1,0 +1,62 @@
+Feature: TxnList Smoke
+
+  Background:
+
+  @testId=accounting-core-transaction-1 @domain=accounting-core @entity=transaction @region=US @priority=p0 @smokes
+  Scenario Outline: Query TxnList for Invoice with filter
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../invoice/query/invoice-default-service-item/mutation-create.graphql', inputFile: '../../invoice/input/invoice-default-service-item/invoice-create.json' }
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/txnlist-filterby.graphql', inputFile: '../input/txnlist-filterby.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER"] } |
+
+
+  @priority=p0 @entity=transaction @domain=accounting-core @region=US @testId=accounting-core-transaction-2
+  Scenario: Create transactions, query default all transactions list
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["ACCOUNT","DEPARTMENTS","ITEMS","CUSTOMER"] }'}
+
+    * set session.runtimeData.type = 'SALE'
+<<<<<<< HEAD
+    * set session.runtimeData.date = '2000-01-01'
+=======
+    * set session.runtimeData.date = session.default.today
+    * set session.runtimeData.amount = "1000.00"
+    * set session.runtimeData.rate = session.runtimeData.amount
+>>>>>>> Refactor rx Payment payloads into shared folder
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-account.json' }
+
+    * set session.runtimeData.type = 'SALE'
+    * set session.runtimeData.date = session.default.today
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-account.json' }
+
+    * set session.runtimeData.type = 'SALE_INVOICE'
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+
+    * set session.runtimeData.type = 'SALE_ESTIMATE'
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+
+    * set session.runtimeData.type = 'SALE_ESTIMATE'
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+
+    * set session.runtimeData.type = 'PURCHASE'
+#    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+
+    * set session.runtimeData.type = 'PURCHASE_BILL'
+#    * set session.runtimeData.contactId = session.default.contact.customer.id
+#    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+#    * set session.runtimeData.contactId = null
+
+    # Entity version for SALE_CREDIT is either 0 or 1, why???
+    * set session.runtimeData.type = 'SALE_CREDIT'
+#    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/txnlist-with-orderBy-limit.graphql', inputFile: '../input/filter/default.json' }
+
+    * def txnTypes = session.runtimeData.list-default.data.company.transactions.edges[*].node.type
+    * def txnMatch = function(x) { return x == 'SALE' || x == 'SALE_INVOICE' || x == 'SALE_CREDIT' || x == 'SALE_INVOICE_PAYMENT' || x == 'SALE_ESTIMATE' }
+    * match each txnTypes contains '#? txnMatch(_)'
+
+    * def txnDates = session.runtimeData.list-default.data.company.transactions.edges[*].node.header.txnDate
+    * match txnDates !contains ['2000-01-01']

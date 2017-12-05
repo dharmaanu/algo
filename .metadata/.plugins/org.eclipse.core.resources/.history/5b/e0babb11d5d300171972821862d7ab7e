@@ -1,0 +1,40 @@
+package Basic;
+
+import java.util.Scanner;
+
+public class MaxMinValueinArray {
+	
+	public static int maxValue(int[] arr) {
+		int max = arr[0];
+		
+		for (int i=1; i < arr.length; i++) {
+			max = max < arr[i] ? arr[i] : max;
+		}		
+		return max;
+	}
+	public static int minValue(int[] arr) {
+		int min = arr[0];
+		
+		for (int i=1; i < arr.length; i++) {
+			min = min > arr[i] ? arr[i] : min;
+		}		
+		return min;
+	}
+	
+	public static void main(String args[]) {
+		
+		Scanner sc = new Scanner(System.in).useDelimiter(",");
+		System.out.println("Enter number:");
+		int count = sc.nextInt();
+		int arr[] = new int[count];
+		for(int i=0;i<count;i++){//for reading array
+		        arr[i]=sc.nextInt();
+
+		    }
+		for (int j=0; j< arr.length; j++) {
+			System.out.println(arr[j]);
+		}
+		System.out.println(maxValue(arr));
+		System.out.println(minValue(arr));
+	}
+}

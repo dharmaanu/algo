@@ -1,0 +1,15 @@
+
+public class MemberofArithmeticProgression {
+	
+	public static boolean isMemberofAP(int a, int d, int x) {
+		
+		if (d == 0) {
+			return a == x;
+		}
+		else if ((x-a) % d == 0) {
+			return true;
+		}
+		return false;
+	}
+
+}

@@ -1,0 +1,31 @@
+Feature:  Invoice Create With Deposits
+
+  Background:
+
+  @priority=p1 @entity=transaction @domain=transactions @type=salesInvoice @region=US @testId=transactions-workflow-invoice-create-10001
+  Scenario Outline: Invoice can be saved with deposit equal to invoice amount
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/mutation-invoice-with-deposit.graphql',inputFile:'../input/mutation-invoice-withdeposit.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "region":"US", "sku" : "PLUS", "defaultEntityCreation": ["ALL"] } |
+
+
+  @priority=p1 @entity=transaction @domain=transactions @type=salesInvoice @region=US @testId=transactions-workflow-invoice-create-10002
+  Scenario Outline: Invoice can be saved with deposit less than invoice amount
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/mutation-invoice-with-deposit.graphql',inputFile:'../input/mutation-invoice-withPartialDeposit.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "region":"US", "sku" : "PLUS", "defaultEntityCreation": ["ALL"] } |
+      
+   @priority=p0 @entity=transaction @domain=transaction @type=receivepayment @region=US @testId=Accounting-Core-ReceivePayment-10008
+   Scenario Outline: Invoice can be saved with deposit less than invoice amount
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/mutation-invoice-with-deposit.graphql',inputFile:'../input/mutation-invoice-withPartialDeposit.json' }
+ 

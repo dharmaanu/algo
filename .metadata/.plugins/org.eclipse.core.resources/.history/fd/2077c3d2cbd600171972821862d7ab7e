@@ -1,0 +1,26 @@
+[
+  {
+    "v4request" : {
+      "v4requestId": "receivePayment-delete",
+      "variables": {
+        "input_0":{
+          "clientMutationId":"1",
+          "transactionsTransaction":{
+            "id" : "$runtimeData.receivePayment-sale-invoice-payment-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id",
+            "deleted" : true
+          }
+        }
+      }
+    },
+    "v4response" : {
+      "statusCode" : "200",
+      "assertions": [
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node",
+          "operand": "contains",
+          "value": {"id": "#notnull","deleted": true}
+        }
+      ]
+    }
+  }
+]

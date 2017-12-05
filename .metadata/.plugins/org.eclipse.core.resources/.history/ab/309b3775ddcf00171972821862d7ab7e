@@ -1,0 +1,31 @@
+
+public class TriangleType {
+
+	public String checkTriangleType(int s1, int s2, int s3) {
+		if (s1==s2  && s2==s3) {
+			return "equilateral";
+		}
+
+		if ((s1+s2) < s3 || (s2+s3) < s1 || (s3+s1) < s2) {
+			System.out.println("I am here");
+			return "Not a triangle";
+		}
+
+		if ((s1==s2 && s1!=s3) || (s2==s3 && s2!=s1) || (s1==s3 && s1!=s2)) {
+			return "Isoceles";
+		}
+		return "scalene";
+
+	}
+
+	public static void main(String args[]) {
+
+		int s1=3;
+		int s2=4;
+		int s3=3;
+		System.out.println((s1+s2) < s3 || (s2+s3) < s1 || (s3+s1) < s2) );
+		TriangleType tri = new TriangleType();
+		System.out.println(tri.checkTriangleType(s1, s2, s3));
+
+	}
+}

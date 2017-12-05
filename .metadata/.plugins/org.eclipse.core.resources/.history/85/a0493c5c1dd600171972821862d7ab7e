@@ -1,0 +1,38 @@
+Feature: TxnList Smoke
+
+  Background:
+
+  @testId=accounting-core-transaction-1 @domain=accounting-core @entity=transaction @region=US @priority=p0 @smokes
+  Scenario Outline: Query TxnList for Invoice with filter
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../invoice/query/invoice-default-service-item/mutation-create.graphql', inputFile: '../../invoice/input/invoice-default-service-item/invoice-create.json' }
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/txnlist-filterby.graphql', inputFile: '../input/txnlist-filterby.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER"] } |
+
+
+   @priority=p0 @entity=transaction @domain=accounting-core @region=US @testId=accounting-core-transaction-2
+  Scenario: Create transactions, query default all transactions list
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["ACCOUNT","DEPARTMENTS","ITEMS","CUSTOMER"] }'}
+
+    * set session.runtimeData.type = 'SALE'
+    * set session.runtimeData.date = session.default.today
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-account.json' }
+
+    * set session.runtimeData.type = 'SALE'
+    * set session.runtimeData.date = '2000-01-01'
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-account.json' }
+
+    * set session.runtimeData.type = 'SALE_INVOICE'
+    * set session.runtimeData.date = session.default.today
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/txnlist-with-orderBy-limit.graphql', inputFile: '../input/filter/default.json' }
+
+    * def txnTypes = session.runtimeData.list-default.data.company.transactions.edges[*].node.type
+    * match txnTypes contains only ['SALE', 'SALE_INVOICE']
+
+    * def txnDates = session.runtimeData.list-default.data.company.transactions.edges[*].node.header.txnDate
+    * match txnDates !contains ['2000-01-01']

@@ -1,0 +1,29 @@
+[
+  {
+    "v4request" : {
+    "v4requestId": "receivePayment-sale-invoice-read-after-update",
+      "variables": {
+        "id": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+      }
+    },
+    "v4response" : {
+      "assertions": [
+        {
+          "path": "data.node",
+          "operand": "contains",
+          "value": {"entityVersion": "1", "id": "#notnull"}
+        },
+         {
+          "path": "data.node.links.targets.edges[0].node.targetTxn.id",
+          "operand": "contains",
+          "value": "$runtimeData.receivePayment-sale-invoice-payment-create.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+        },
+        {
+          "path": "data.node.links.targets.edges[0].node.targetTxn.id",
+          "operand": "contains",
+          "value": "$runtimeData.receivePayment-sale-invoice-payment-create.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+        }
+      ]
+    }
+  }
+]

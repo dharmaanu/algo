@@ -1,0 +1,15 @@
+package Basic;
+
+public class MaxMinValueinArray {
+	
+	public static int maxValue(int[] arr) {
+		int max = arr[0];
+		
+		for (int i=1; i < arr.length; i++) {
+			max = max < arr[i] ? arr[i] : max;
+		}
+		
+		return max;
+	}
+
+}

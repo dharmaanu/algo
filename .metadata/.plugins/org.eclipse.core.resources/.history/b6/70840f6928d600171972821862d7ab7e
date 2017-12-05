@@ -1,0 +1,59 @@
+[
+	{
+		"v4request": {
+			"v4requestId": "create-transaction-paymentMethod-sourceTxn",
+			"variables": {
+				"input_0": {
+					"clientMutationId": "0",
+					"transactionsTransaction": {
+						"type": "$runtimeData.type",
+						"header": {
+							"txnDate": "$default.today",
+							"contact": {
+								"id": "$default.contact.customer.id"
+							},
+							"account": {
+								"id": "$default.account.deposit.id"
+							}
+						},
+						"traits": {
+						    "payment" : {
+						       "paymentMethod": {
+						          "id": "$runtimeData.paymentMethodId"
+						       }
+						     }
+						},						       
+						"links": {
+							"sources": [
+								{
+									"chargeType": "CHARGE",
+									"amountConsumed": "$runtimeData.paymentAmount",
+									"sourceTxn": {
+										"id": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+									}
+								}
+							]
+						}
+					}
+				}
+			}
+		},
+		"v4response": {
+			"assertions": [
+				{
+					"path": "data.createTransactions_Transaction.transactionsTransactionEdge.node",
+					"operand": "contains",
+					"value": {
+						"entityVersion": "0",
+						"id": "#notnull"
+					}
+				},
+				{
+					"path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.header.amount",
+					"operand": "==",
+					"value": "$runtimeData.paymentAmount"
+				}
+			]
+		}
+	}
+]

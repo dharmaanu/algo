@@ -1,0 +1,32 @@
+query read($id:ID!) {
+    node(id: $id) {
+        ...txn
+    }
+}
+fragment txn on Transactions_Transaction {
+    id
+    entityVersion
+    type
+    traits {
+        balance {
+            amountPaid
+            balance
+        }
+        amountPaid
+    }
+    links {
+        sources {
+          edges {
+            node {
+              sourceTxn {
+                     id
+                     type
+                     header {
+                       amount
+                     }
+               }
+            }
+          }
+        }
+    }
+}

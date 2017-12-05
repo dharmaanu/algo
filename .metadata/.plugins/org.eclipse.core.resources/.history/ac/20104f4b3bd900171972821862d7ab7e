@@ -1,0 +1,53 @@
+[
+  {
+    "v4request": {
+      "v4requestId": "update-transaction-depositAmount",
+      "variables": {
+        "input_0": {
+          "clientMutationId": "0",
+          "transactionsTransaction": {
+            "id": "$runtimeData.id",
+            "type": "$runtimeData.type",
+            "traits": {
+              "invoiceDeposit": {
+                "depositAmount": "$runtimeData.depositAmount",
+                "depositToAccount": {
+                  "id": "$default.account.deposit.id"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "v4response": {
+      "assertions": [
+        {
+          "path": "data.updateTransactions_Transaction.transactionsTransaction.traits.invoiceDeposit.depositAmount",
+          "operand": "==",
+          "value": "$runtimeData.depositAmount"
+        },
+        {
+          "path": "data.updateTransactions_Transaction.transactionsTransaction.traits.balance.amountPaid",
+          "operand": "==",
+          "value": "$runtimeData.balanceAmount"
+        },
+        {
+          "path": "data.updateTransactions_Transaction.transactionsTransaction.header.amount",
+          "operand": "==",
+          "value": "$runtimeData.amount"
+        },
+        {
+          "path": "data.updateTransactions_Transaction.transactionsTransaction.entityVersion",
+          "operand": "==",
+          "value": "$runtimeData.entityVersion"
+        },
+        {
+          "path": "data.updateTransactions_Transaction.transactionsTransaction.type",
+          "operand": "==",
+          "value": "$runtimeData.type"
+        }
+      ]
+    }
+  }
+]

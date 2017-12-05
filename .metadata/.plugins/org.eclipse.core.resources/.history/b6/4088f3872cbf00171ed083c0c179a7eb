@@ -1,0 +1,35 @@
+[
+  {
+    "v4request": {
+      "v4requestId": "receivePayment-sale-invoice-update",
+      "variables": {
+        "input_0": {
+          "clientMutationId": "0",
+          "transactionsTransaction": {
+            "id": "$runtimeData.receivePayment-sale-invoice-read-after-update.data.node.id",
+            "entityVersion": "$runtimeData.receivePayment-sale-invoice-read-after-update.data.node.entityVersion",
+            "type": "$runtimeData.receivePayment-sale-invoice-read-after-update.data.createTransactions_Transaction.transactionsTransactionEdge.node.type",
+            "header": {
+              "txnDate": "$receivePayment-sale-invoice-read-after-update.data.createTransactions_Transaction.transactionsTransactionEdge.node.header.txnDate",
+              "contact": {
+                "id": "receivePayment-sale-invoice-read-after-update.data.createTransactions_Transaction.transactionsTransactionEdge.node.header.contact.id"
+              }
+            },
+            "traits": {
+              "invoiceDeposit": {
+                "depositAmount": "$runtimeData.depositAmount",
+                "depositToAccount": {
+                  "id": "$default.account.deposit.id"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "v4response": {
+      "assertions": [
+      ]
+    }
+  }
+]

@@ -1,0 +1,11 @@
+
+public class TriangleType {
+
+	 public String checkTriangleType(int s1, int s2, int s3) {
+		 if (s1 == s2 == s3 ) {
+			 return "equilateral";
+		 }
+		 return null;
+		 
+	 }
+}

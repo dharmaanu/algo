@@ -1,0 +1,28 @@
+[{
+  "v4request": {
+    "v4requestId" : "sale-invoice-read-after-delete",
+    "variables": {
+      "id" : "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+    }
+  },
+  "v4response": {
+    "statusCode": "200",
+    "assertions": [
+      {
+        "path": "errors",
+        "operand": "==",
+        "value": "#notnull"
+      },
+      {
+        "path": "errors[0].code",
+        "operand": "==",
+        "value": "610"
+      },
+      {
+        "path": "errors[0].type",
+        "operand": "==",
+        "value": "NOT_FOUND_ERROR"
+      }
+    ]
+  }
+}]

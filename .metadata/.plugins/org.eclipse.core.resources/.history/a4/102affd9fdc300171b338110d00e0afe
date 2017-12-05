@@ -1,0 +1,24 @@
+Feature: Receive Payment CRUD
+  
+  @priority=p0 @testId=transaction-receivePayment-2 @entity=transaction @domain=transaction @type=receivePayment @region=US @smokes
+  Scenario Outline: Receive Payment CRUD
+    
+    # setup
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+    
+    # create invoice
+    * set session.runtimeData.entityVersion = "0"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }
+    
+    # read by id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/sale-invoice-read.json' }
+    
+    # update
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-update.json' }
+
+    # delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-delete.json' }
+    
+    Examples:
+      | companyCriteria |
+      | { "regionName": "US", "sku": "PLUS", "defaultEntityCreation": ["ALL"] } |

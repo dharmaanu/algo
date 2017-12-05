@@ -1,0 +1,89 @@
+[
+  {
+    "v4request" : {
+      "v4requestId": "receivePayment-sale-invoice-create",
+       "v4headers" : {
+        "Cookie":"$runtimeData.transactions-readOne.headers.Set-Cookie"
+      },
+      "variables": {
+        "input_0":{
+          "clientMutationId":"0",
+          "transactionsTransaction":{
+            "type": "SALE_INVOICE",
+            "header": {
+              "txnDate": "2017-10-10",
+              "contact": {
+                "id": "$default.contact.customer.id"
+              }
+            },
+            "lines": {
+              "itemLines": [
+                {
+                  "amount": "$runtimeData.invoiceAmount",
+                  "traits": {
+                    "item": {
+                      "rate": "$runtimeData.invoiceAmount",
+                      "item": {
+                        "id": "$default.item.service.id"
+                      }
+                    }
+                  },
+                  "description": "service fee for computer repair"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "v4response" : {
+      "assertions": [
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node",
+          "operand": "contains",
+          "value": {"entityVersion": "$runtimeData.entityVersion", "id": "#notnull"}
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.type",
+          "operand": "==",
+          "value": "SALE_INVOICE"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.header.txnDate",
+          "operand": "==",
+          "value": "2017-10-10"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.header.contact.id",
+          "operand": "==",
+          "value": "#notnull"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines",
+          "operand": "==",
+          "value": "#notnull"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.amount",
+          "operand": "==",
+          "value": "$runtimeData.invoiceAmount"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.traits.item.rate",
+          "operand": "==",
+          "value": "$runtimeData.invoiceAmount"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.traits.item.item.id",
+          "operand": "==",
+          "value": "#notnull"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.itemLines.edges[0].node.description",
+          "operand": "==",
+          "value": "service fee for computer repair"
+        }
+      ]
+    }
+  }
+]

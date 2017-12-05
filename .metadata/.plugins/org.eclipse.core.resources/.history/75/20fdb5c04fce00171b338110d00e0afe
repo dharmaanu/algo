@@ -1,0 +1,73 @@
+Feature:  Receive Payment Mutation
+
+  Background:  
+  @priority=p0 @testId=transaction-transaction-receivePayment-1 @entity=transaction @domain=transaction @type=receivePayment @region=US @smokes
+  Scenario: Create and receive payment on sale invoice
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER","ACCOUNT","ITEMS"] }'}
+
+    # create invoice
+    * set session.runtimeData.invoiceAmount = "10.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }  
+    
+    # receive payment against invoice
+    * set session.runtimeData.paymentMethodId = "1"
+    * set session.runtimeData.paymentAmount = "10.00"
+    * set session.runtimeData.customerId = session.default.contact.customer.id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }
+
+    # modify receive payment
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation-update.json' }
+
+    # modify back receive payment
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation-updateback.json' }
+
+    # verify invoice is paid
+    * set session.runtimeData.invoiceId = session.runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id
+    * set session.runtimeData.paymentId = session.runtimeData.receivePayment-sale-invoice-payment-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/sale-invoice-read-after-update.json' }
+
+    # delete receive payment
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-delete.json' }
+
+  @priority=p0 @testId=transaction-transaction-receivePayment-5 @entity=transaction @domain=transaction @type=receivePayment @region=US
+  Scenario: Test Deposit Account balance changes when Create and Delete a Payment
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER","ACCOUNT","ITEMS"] }'}
+
+    # create invoice
+    * set session.runtimeData.invoiceAmount = "10.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }
+
+    # verify account
+    * set session.runtimeData.balance = "0.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/ledgerAccount-readList.graphql',inputFile:'../input/ledgerAccount-readList.json' }
+    
+    # receive payment against invoice
+    * set session.runtimeData.paymentAmount = "10.00"
+    * set session.runtimeData.paymentMethodId = "1"
+    * set session.runtimeData.customerId = session.default.contact.customer.id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }
+
+    # verify account: get balance from previous result.
+    * set session.runtimeData.balance = session.runtimeData.receivePayment-sale-invoice-payment-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.header.amount
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/ledgerAccount-readList.graphql',inputFile:'../input/ledgerAccount-readList.json' }
+
+    # delete receive payment
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-delete.json' }
+
+    # verify account
+    * set session.runtimeData.balance = "0.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/ledgerAccount-readList.graphql',inputFile:'../input/ledgerAccount-readList.json' }
+    
+  @priority=p1 @testId=transaction-transaction-receivePayment-10017 @entity=transaction @entity=transaction @domain=transaction @type=receivepayment @region=US 
+  Scenario: Create and receive payment on sale invoice
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER","ACCOUNT","ITEMS"] }'}
+
+    # create invoice
+    * set session.runtimeData.invoiceAmount = "10.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }
+   
+    # receive payment against invoice
+    * set session.runtimeData.paymentMethodId = "3"
+    * set session.runtimeData.paymentAmount = "10.00"
+    * set session.runtimeData.customerId = session.default.contact.customer.id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }

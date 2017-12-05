@@ -1,0 +1,29 @@
+[
+  {
+    "v4request": {
+      "v4requestId": "sale-payment-read-after-deposit",
+      "variables": {
+        "id": "$runtimeData.id"
+      }
+    },
+    "v4response": {
+      "assertions": [
+        {
+          "path": "data.node.entityVersion",
+          "operand": "==",
+          "value": "1"
+        },
+        {
+          "path": "data.node.id",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-payment-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+        },
+        {
+          "path": "data.node.links.sources.edges[0].node.sourceTxn.header.amount",
+          "operand": "==",
+          "value": "$runtimeData.balanceAmount"
+        }       
+      ]
+    }
+  }
+]

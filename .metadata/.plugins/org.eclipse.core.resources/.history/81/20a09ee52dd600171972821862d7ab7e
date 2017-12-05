@@ -1,0 +1,45 @@
+[
+  {
+    "v4request" : {
+      "v4requestId": "update-memo-referencenumber",
+      "variables": {
+        "input_0":{
+          "clientMutationId":"0",
+          "transactionsTransaction":{
+            "id": "$runtimeData.id",
+            "entityVersion": "$runtimeData.entityVersion",
+            "type": "$runtimeData.type",
+            "header": {
+              "privateMemo": "random (string, 5, 10, 'privateMemo')",
+              "referenceNumber": "random (string, 3, 5, 'referenceNumber')",
+              "txnDate": "$default.today",
+              "contact": {
+                "id": "$default.contact.customer.id"
+              }
+            }
+          }
+        }
+      }
+    },
+    "v4response" : {
+      "statusCode" : "200",
+      "assertions": [
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node",
+          "operand": "contains",
+          "value": {"entityVersion": "1", "id": "#notnull"}
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.header.privateMemo",
+          "operand": "==",
+          "value": "$runtimeData.privateMemo"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.header.referenceNumber",
+          "operand": "==",
+          "value": "$runtimeData.referenceNumber"
+        }
+      ]
+    }
+  }
+]

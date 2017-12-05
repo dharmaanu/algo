@@ -1,0 +1,166 @@
+mutation createTransactions_Transaction($input_0: CreateTransactions_TransactionInput!) {
+    createTransactions_Transaction(input: $input_0) {
+        clientMutationId
+        transactionsTransactionEdge {
+            node {
+                id
+                entityVersion
+                type
+                deleted
+                header {
+                    privateMemo
+                    account {
+                        id
+                    }
+                    referenceNumber
+                    department {
+                        id
+                    }
+                    txnDate
+                    amount
+                    voided
+                    currencyInfo {
+                        name
+                        symbol
+                        code
+                        homeAmount
+                        exchangeRate
+                        currency
+                    }
+                    contact {
+                        id
+                        person{
+                            fullyQualifiedName
+                            }
+                        profiles {
+                            vendor {
+                                contact {
+                                    id
+                                }
+                            }
+                            customer {
+                                 contact {
+                                     id
+                                 }
+                            }
+                            employee {
+                                contact {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+                traits {
+                    payment {
+                        paymentType
+                        paymentMethod {
+                            id
+                        }
+                        checkInfo {
+                            checkNumber
+                        }
+                    }
+                    balance {
+                        amountPaid
+                        balance
+                    }
+                    invoiceDeposit {
+                        depositAmount
+                        depositToAccount {
+                            id
+                        }
+                    }
+                }
+                lines {
+                    accountLines {
+                        edges {
+                            node {
+                                amount
+                                account {
+                                    id
+                                }
+                                description
+                                class {
+                                    id
+                                }
+                                traits {
+                                    billable {
+                                        billableTo {
+                                            id
+                                        }
+                                        salesAmt
+                                    }
+                                    markup {
+                                        amount
+                                        percent
+                                    }
+                                    item {
+                                        quantity
+                                        rate
+                                        item {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    itemLines {
+                        edges {
+                            node {
+                                id
+                                amount
+                                description
+                                account {
+                                    name
+                                }
+                                traits {
+                                    billable {
+                                        billableTo {
+                                            id
+                                        }
+                                        salesAmt
+                                    }
+                                    markup {
+                                        amount
+                                        percent
+                                    }
+                                    item {
+                                        quantity
+                                        rate
+                                        item {
+                                            id
+                                            name
+                                        }
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+                }
+                links {
+                    sources {
+                        edges {
+                            node {
+                                amountConsumed
+                                sourceTxn {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+                qboAppData {
+                    hasClasses
+                    warnOnMissingClass
+                }
+                department {
+                    id
+                }
+            }
+        }
+    }
+}

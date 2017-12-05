@@ -1,0 +1,46 @@
+[
+  {
+    "v4request" : {
+      "v4requestId": "rp-updateback",
+      "variables": {
+        "input_0":{
+          "clientMutationId":"0",
+          "transactionsTransaction":{
+            "id": "$runtimeData.rp-update.data.createTransactions_Transaction.transactionsTransactionEdge.node.id",
+            "entityVersion": "$runtimeData.rp-update.data.createTransactions_Transaction.transactionsTransactionEdge.node.entityVersion",
+            "type": "SALE_INVOICE_PAYMENT",
+            "header": {
+              "privateMemo": "",
+              "referenceNumber": "",
+              "txnDate": "$default.today",
+              "contact": {
+                "id": "$default.contact.customer.id"
+              }
+
+            }
+          }
+        }
+      }
+    },
+    "v4response" : {
+      "statusCode" : "200",
+      "assertions": [
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node",
+          "operand": "contains",
+          "value": {"entityVersion": "2", "id": "#notnull"}
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.header.privateMemo",
+          "operand": "==",
+          "value": "#null"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.header.referenceNumber",
+          "operand": "==",
+          "value": "#null"
+        }
+      ]
+    }
+  }
+]

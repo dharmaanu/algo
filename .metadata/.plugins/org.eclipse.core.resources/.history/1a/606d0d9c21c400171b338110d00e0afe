@@ -1,0 +1,32 @@
+[
+  {
+    "v4request": {
+      "v4requestId": "sale-credit-memo-mutation",
+      "v4headers" : {
+        "Cookie":"$runtimeData.receivePayment-sale-invoice-create.headers.Set-Cookie"
+      },
+      "variables": {
+        "id": "$runtimeData.sale-credit-memo-mutation.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+      }
+    },
+    "v4response": {
+      "assertions": [
+        {
+          "path": "data.node.entityVersion",
+          "operand": "==",
+          "value": "1"
+        },
+        {
+          "path": "data.node.id",
+          "operand": "==",
+          "value": "$runtimeData.sale-credit-memo-mutation.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+        },
+        {
+          "path": "data.node.type",
+          "operand": "==",
+          "value": "$runtimeData.type"
+        }
+      ]
+    }
+  }
+]

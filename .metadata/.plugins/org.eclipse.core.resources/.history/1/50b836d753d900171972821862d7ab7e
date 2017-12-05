@@ -1,0 +1,25 @@
+Feature: Credit Memo CRUD
+
+  @priority=p0 @testId=transaction-creditmemo-1 @entity=transaction @domain=transaction @type=creditmemo @region=US @smokes
+  Scenario Outline: Create with all fields, read, update, and delete
+
+    # setup
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    # store in session
+    * set session.runtimeData.type = 'SALE_CREDIT'
+    * set session.runtimeData.date = session.default.today
+    * set session.runtimeData.amount = "1000.00"
+    * set  session.runtimeData.rate = session.runtimeData.amount
+    # create
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+    # read by id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/readOne.json' }
+    # update
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/update-without-account.json' }
+    # delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/delete.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "regionName": "US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER","ITEMS"] } |

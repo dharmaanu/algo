@@ -1,0 +1,78 @@
+Feature:  Receive Payment Mutation
+
+  Background:
+
+  @priority=p0 @testId=transaction-transaction-receivePayment-1 @entity=transaction @domain=transaction @type=receivePayment @region=US @smokes
+  Scenario: Create and receive payment on sale invoice
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["ALL"] }'}
+
+    # create invoice
+    * set session.runtimeData.entityVersion = "0"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }
+    * set session.runtimeData.paymentAmount = "10.00"
+    # receive payment against invoice
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }
+
+    # modify receive payment
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation-update.json' }
+
+    # modify back receive payment
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation-updateback.json' }
+
+    # verify invoice is paid
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/sale-invoice-read-after-update.json' }
+
+    # delete receive payment
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-delete.json' }
+
+  @priority=p0 @testId=transaction-transaction-receivePayment-5 @entity=transaction @domain=transaction @type=receivePayment @region=US
+  Scenario: Test Deposit Account balance changes when Create and Delete a Payment
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["ALL"] }'}
+
+    # create invoice
+    * set session.runtimeData.entityVersion = "0"
+    * set session.runtimeData.invoiceAmount = "10.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }
+
+    # verify account
+    * set session.runtimeData.balance = "0.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/ledgerAccount-readList.graphql',inputFile:'../input/ledgerAccount-readList.json' }
+    
+    # receive payment against invoice
+    * set session.runtimeData.paymentAmount = "10.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }
+
+    # verify account: get balance from previous result.
+    * set session.runtimeData.balance = session.runtimeData.receivePayment-sale-invoice-payment-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.header.amount
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/ledgerAccount-readList.graphql',inputFile:'../input/ledgerAccount-readList.json' }
+
+    # delete receive payment
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-delete.json' }
+
+    # verify account
+    * set session.runtimeData.balance = "0.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/ledgerAccount-readList.graphql',inputFile:'../input/ledgerAccount-readList.json' }
+         
+   @priority=p0 @entity=transaction @domain=transaction @type=receivepayment @region=US @testId=transaction-transaction-receivePayment-10008
+   Scenario: Invoice deposit offsets the payment amount in Receive payment
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["ALL"] }'}
+    
+    # create invoice 
+    * set session.runtimeData.entityVersion = "0"
+    * set session.runtimeData.invoiceAmount = "10.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }
+    
+    # receive payment against invoice
+    * set session.runtimeData.paymentAmount = "10.00"    
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }
+    
+    # read by id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/sale-invoice-read-after-update.json' }
+    
+    # update invoice with deposit
+    * set session.runtimeData.depositAmount = "3.00"
+    * set session.runtimeData.balanceAmount = "7.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/update.graphql', inputFile: '../input/sale-invoice-update-depositAmount.json' }
+    
+    # Read payment    
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/payment-read-sourceTxn.graphql', inputFile: '../input/sale-payment-read-after-deposit.json' }

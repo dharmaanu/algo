@@ -1,0 +1,9 @@
+package Basic;
+import java.util.LinkedList;
+
+public class LinkedListImpl {
+	
+	LinkedList ln = new LinkedList();
+	
+
+}

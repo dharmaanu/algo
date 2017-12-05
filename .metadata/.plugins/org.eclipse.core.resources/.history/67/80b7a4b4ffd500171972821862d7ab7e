@@ -1,0 +1,75 @@
+[{
+  "v4request": {
+    "variables": {
+      "input_0": {
+        "clientMutationId": "0",
+        "transactionsTransaction": {
+          "type": "PURCHASE_ORDER",
+          "header": {
+            "txnDate": "2017-10-10",
+            "contact": {
+              "id": "$default.contact.vendor.id"
+            }
+          },
+
+
+          "lines": {
+            "accountLines": [
+              {
+                "account": {
+                  "id": "$default.account.expense.id"
+                },
+                "traits": {
+                   "billable": {
+                       "billableTo": {
+                           "id": "$default.contact.customer.id"
+                         }
+                   }
+                },
+                "description": "advertising line",
+                "amount": "random(float, 0, 500, 'amount')"
+                }
+              ]
+          }
+        }
+      }
+    }
+  },
+  "v4response": {
+    "statusCode": "200",
+    "assertions": [{
+      "path": "data",
+      "operand": "contains",
+      "value": {
+        "createTransactions_Transaction": "#notnull"
+      }
+    },
+
+      {
+        "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.id",
+        "operand": "==",
+        "value": "#notnull"
+      },
+      {
+        "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines",
+        "operand": "==",
+        "value": "#notnull"
+      },
+      {
+        "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.accountLines.edges[0].node.account.id",
+        "operand": "==",
+        "value": "$default.account.expense.id"
+      },
+      {
+        "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.accountLines.edges[0].node.description",
+        "operand": "==",
+        "value": "advertising line"
+      },
+      {
+        "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.lines.accountLines.edges[0].node.amount",
+        "operand": "==",
+        "value": "$runtimeData.amount"
+      }
+    ]
+  }
+}]

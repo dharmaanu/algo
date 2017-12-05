@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+		<item value="/Users/adharmarajan/git/overwatch-v4-tests"/>
+	</list>
+	<section name="org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog">
+		<item value="false" key="FilterByLocation"/>
+		<item value="true" key="ShowStatusLine"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History&gt;&#x0A;&lt;historyRootNode&gt;&#x0A;&lt;infoNode path=&quot;/overwatch-v4-tests/src/test/java/com/intuit/v4/shared/query/transactions/create.graphql&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/overwatch-v4-tests/src/test/java/com/intuit/v4/transactions/receivepayment/input/sale-invoice-payment-mutation.json&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/overwatch-v4-tests/src/test/java/com/intuit/v4/transactions/receivepayment/input/sale-invoice-read-after-update.json&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/overwatch-v4-tests/src/test/java/com/intuit/v4/transactions/receivepayment/input/sale-invoice-read.json&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/overwatch-v4-tests/src/test/java/com/intuit/v4/transactions/purchase/tests/purchase-create-serviceitem.feature&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/overwatch-v4-tests/src/test/java/com/intuit/v4/shared/input/transactions/readOne.json&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;/historyRootNode&gt;&#x0A;&lt;/History&gt;" key="History"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;workingSet workingSetName=&quot;&quot;/&gt;" key="WorkingSet"/>
+		<item value="false" key="ShowDerived"/>
+		<section name="DialogBoundsSettings">
+			<item value="600" key="DIALOG_WIDTH"/>
+			<item value="1|.AppleSystemUIFont|11.0|0|COCOA|1|.AppleSystemUIFont" key="DIALOG_FONT_NAME"/>
+			<item value="500" key="DIALOG_HEIGHT"/>
+			<item value="470" key="DIALOG_X_ORIGIN"/>
+			<item value="300" key="DIALOG_Y_ORIGIN"/>
+		</section>
+	</section>
+	<section name="SaveAsDialogSettings">
+		<item value="526" key="DIALOG_WIDTH"/>
+		<item value="1|.AppleSystemUIFont|11.0|0|COCOA|1|.AppleSystemUIFont" key="DIALOG_FONT_NAME"/>
+		<item value="529" key="DIALOG_HEIGHT"/>
+		<item value="1017" key="DIALOG_X_ORIGIN"/>
+		<item value="22" key="DIALOG_Y_ORIGIN"/>
+	</section>
+</section>

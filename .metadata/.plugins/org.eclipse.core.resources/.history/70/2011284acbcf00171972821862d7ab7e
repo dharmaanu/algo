@@ -1,0 +1,20 @@
+
+public class UnionIntersectionUsingBinarySearch {
+	public int binarySearch (int[] arr, int l, int r, int x) {
+		
+		int mid = l + (r-1)/2;
+		
+		if (x == mid) {
+			return x;
+		}
+		
+		else if (x < mid) {
+			
+			return binarySearch(arr, 0, mid, x);
+		}
+		else {
+			return binarySearch(arr, mid, r, x);
+		}
+		
+	}
+}

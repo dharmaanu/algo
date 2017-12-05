@@ -1,0 +1,6 @@
+Feature:  Delete
+
+  @priority=p1 @testId=transaction-transaction-receivePayment-10010 @entity=transaction @domain=transaction @type=receivePayment @region=US
+  Scenario: Test payment linked to 4 invoices
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER","ACCOUNT","ITEMS"] }'}
+    * print session.default.paymentMethod.id

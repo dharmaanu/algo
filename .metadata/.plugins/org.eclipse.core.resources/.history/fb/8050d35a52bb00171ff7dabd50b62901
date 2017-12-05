@@ -1,0 +1,14 @@
+Feature:  Invoice Create With Deposits
+
+  Background:
+
+   @priority=p0 @entity=transaction @domain=transaction @type=receivepayment @region=US @testId=Accounting-Core-ReceivePayment-10008
+   Scenario Outline: Invoice deposit shows in Receive payment as Amount to Credit
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../query/mutation-invoice-with-deposit.graphql',inputFile:'../input/mutation-invoice-withPartialDeposit.json' }
+    * set session.runtimeData.paymentAmount = "100.00"
+    # receive payment against invoice
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }
+    # verify invoice is paid
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/sale-invoice-read-after-update.json' }

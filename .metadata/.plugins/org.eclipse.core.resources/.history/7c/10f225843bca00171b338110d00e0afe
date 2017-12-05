@@ -1,0 +1,17 @@
+Feature:  Receive Payment Mutation with different amounts in invoice and Payment
+
+  Background:
+
+  @priority=p0 @testId=transaction-receivePayment-3 @entity=transaction @domain=transaction @type=receivePayment @region=US @smokes
+  Scenario: Create and receive payment on sale invoice
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER","ITEMS","ACCOUNT"] }'}
+
+    # create invoice
+    * set session.runtimeData.invoiceAmount = "10.00"
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }
+    * set session.runtimeData.paymentAmount = "5.00"
+    # receive payment against invoice
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }
+
+    # verify invoice is paid partially
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../input/sales-invoice-read-after-update-amount-balance.json' }

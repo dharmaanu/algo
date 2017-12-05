@@ -1,0 +1,19 @@
+[
+  {
+    "v4request" : {
+    "v4requestId": "receivePayment-sale-invoice-read-after-update",
+      "variables": {
+        "id": "$runtimeData.invoiceId"
+      }
+    },
+    "v4response" : {
+      "assertions": [
+        {
+          "path": "data.node",
+          "operand": "contains",
+          "value": {"entityVersion": "1", "id": "#notnull"}
+        }
+      ]
+    }
+  }
+]

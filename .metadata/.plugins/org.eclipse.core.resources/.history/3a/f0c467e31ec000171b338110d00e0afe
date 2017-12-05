@@ -1,0 +1,19 @@
+Feature: Delete an invoice linked to a payment
+
+  Background:
+
+  @testId=transactions-transaction-receivePayment-10012 @priority=p1 @entity=transaction @domain=transaction @type=receivepayment @region=US
+  Scenario Outline: Delete an invoice linked to a payment
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["ALL"] }'}
+    
+    # create invoice 
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-mutation.json' }
+    
+    # receive payment against invoice
+    * set session.runtimeData.paymentAmount = "10.00"    
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-mutation.json' }
+    
+    # delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/delete.json' }
+    # read after delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/read-after-delete.json' }

@@ -1,0 +1,30 @@
+[
+  {
+    "v4request": {
+      "v4requestId": "receivePayment-sale-invoice-delete",
+      "variables": {
+        "input_0": {
+          "clientMutationId": "0",
+          "transactionsTransaction": {
+            "id": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id",
+            "deleted": true
+          }
+        }
+      }
+    },
+    "v4response": {
+      "assertions": [
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.id",
+          "operand": "==",
+          "value": "$runtimeData.receivePayment-sale-invoice-create.data.createTransactions_Transaction.transactionsTransactionEdge.node.id"
+        },
+        {
+          "path": "data.createTransactions_Transaction.transactionsTransactionEdge.node.deleted",
+          "operand": "==",
+          "value": true
+        }
+      ]
+    }
+  }
+]

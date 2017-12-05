@@ -1,0 +1,15 @@
+
+public class PrimeNumber {
+	
+	public static String primeNumber(num) {
+	String result = "Not prime";
+		for (i=2; i< num; i++) {
+          if (num % i == 0) {
+        	     result = "prime";
+        	     break;
+          }
+		}
+		return result;
+	}
+
+}

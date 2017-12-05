@@ -1,0 +1,127 @@
+Feature:QBO Sales Receipt CRUD
+
+  Background:
+
+  @testId=Transactions-WorkflowSalesReceiptCreate30000 @domain=transactions @entity=transaction @type=salesreceipt @priority=p0 @smoke
+  Scenario Outline: QBO Sales Receipt CRUD with min fields
+
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    # store in session
+    * set session.runtimeData.type = 'SALE'
+    * set session.runtimeData.contactId = '$default.contact.customer.id'
+    # create with minimum fields
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-min-fields.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "regionName":"US", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","ACCOUNT"] } |
+      | { "regionName":"GB", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","ACCOUNT"] } |
+
+  @testId=Transactions-WorkflowSalesReceiptCreate30003 @domain=transactions @entity=transaction @type=salesreceipt @priority=p0 @smokes
+  Scenario Outline: QBO Sales Receipt CRUD with all fields
+
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    # store in session
+    * set session.runtimeData.type = 'SALE'
+    * set session.runtimeData.contactId = '$default.contact.customer.id'
+    * set session.runtimeData.date = session.default.today
+    # create
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-account.json' }
+    # read by id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/readOne.json' }
+    # update
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/update-with-account.json' }
+    # delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/delete.json' }
+    # read after delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/read-after-delete.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "regionName":"US", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","DEPARTMENTS","ACCOUNT","ITEMS"] } |
+      | { "regionName":"GB", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","DEPARTMENTS","ACCOUNT","ITEMS"] } |
+
+  @testId=Transactions-WorkflowSalesReceiptCreate30014 @domain=transactions @entity=transaction @type=salesreceipt @priority=p1
+  Scenario Outline: QBO Sales Receipt CRUD with all fields (AU, IN, CA)
+
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    # store in session
+    * set session.runtimeData.type = 'SALE'
+    * set session.runtimeData.contactId = '$default.contact.customer.id'
+    * set session.runtimeData.date = session.default.today
+    # create
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-account.json' }
+    # read by id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/readOne.json' }
+    # update
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/update-with-account.json' }
+    # delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/delete.json' }
+    # read after delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/read-after-delete.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "regionName":"AU", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","ITEMS","ACCOUNT","DEPARTMENTS"] } |
+      | { "regionName":"IN", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","ITEMS","ACCOUNT","DEPARTMENTS"] } |
+      | { "regionName":"CA", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","ITEMS","ACCOUNT","DEPARTMENTS"] } |
+
+  @testId=Transactions-WorkflowSalesReceiptCreate30009 @domain=transactions @entity=transaction @type=salesreceipt @priority=p1
+  Scenario Outline: QBO Sales Receipt create with all fields including all header fields
+
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    # store in session
+    * set session.runtimeData.type = 'SALE'
+    * set session.runtimeData.contactId = '$default.contact.customer.id'
+    # create
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/salesreceipt-create-with-header-fields.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "regionName":"US", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","ITEMS","ACCOUNT","DEPARTMENTS"] } |
+
+  @testId=Transactions-WorkflowSalesReceiptCreate30018 @domain=transactions @entity=transaction @type=salesreceipt @priority=p1
+  Scenario Outline: QBO Create Sales Receipt with Cash/Check Payment method
+
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku":"PLUS", "defaultEntityCreation": ["ACCOUNT","CUSTOMER","ITEMS"] }'}
+
+    # store in session
+    * set session.runtimeData.type = 'SALE'
+    * set session.runtimeData.paymentMethod = '<id>'
+    # create
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/salesreceipt-create-with-paymentMethod.json' }
+
+    Examples:
+      | id  |
+      | 1   |
+      | 2   |
+
+  @testId=ransactions-WorkflowSalesReceiptCreate30010 @domain=transactions @entity=transaction @type=salesreceipt @priority=p0 @smokes
+  Scenario Outline: QBO Sales Receipt update with stale entityVersion
+
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    # store in session
+    * set session.runtimeData.type = 'SALE'
+    * set session.runtimeData.date = '2017-10-10'
+    * set session.runtimeData.entityVersion = '1'
+    * set session.runtimeData.deleted = false
+    * set session.runtimeData.contactId = session.default.contact.customer.id
+    * set session.runtimeData.accountId = session.default.account.deposit.id
+    * set session.runtimeData.itemId = session.default.item.service.id
+    * set session.runtimeData.errorCode = '5010'
+    * set session.runtimeData.errorType = 'STALE_STATE_ERROR'
+    # create
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-account.json' }
+    # update with stale entityVersion
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/salesreceipt-update-delete-stale-entityVersion.json' }
+    # update with valid entityVersion
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/update-with-account.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "regionName":"US", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","ITEMS","ACCOUNT","DEPARTMENTS"] } |

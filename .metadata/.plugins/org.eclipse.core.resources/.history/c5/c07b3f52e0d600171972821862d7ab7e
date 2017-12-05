@@ -1,0 +1,68 @@
+Feature: Delete an invoice linked to a payment
+
+  Background:
+  @priority=p1 @entity=transaction @domain=transaction @type=receivepayment @region=US @testId=transaction-transaction-receivePayment-10012
+  Scenario: Delete an invoice linked to a payment
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation":["CUSTOMER","ACCOUNT","ITEMS"] }'}
+    
+    # create invoice 
+    * set session.runtimeData.type = 'SALE_INVOICE'
+    * set session.runtimeData.date = session.default.today
+    * set session.runtimeData.amount = "10.00"
+    * set session.runtimeData.rate = session.runtimeData.amount
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+    
+    # receive payment against invoice
+    # paymentmethodId is <1> <2> <3>... for Cash, check, credit card and so on. To get payment method Id, navigate to All lists > Payment Methods
+    * set session.runtimeData.paymentMethodId = "1"
+    * set session.runtimeData.amount = "10.00"
+    * set session.runtimeData.type = 'SALE_INVOICE_PAYMENT'
+    * set session.runtimeData.sourceType = 'CHARGE'
+    * set session.runtimeData.customerId = session.default.contact.customer.id
+    * set session.runtimeData.sourceTxn = session.runtimeData.transactions-create-all-fields.data.createTransactions_Transaction.transactionsTransactionEdge.node.id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-paymentMethod-sourceTxn.json' }
+    
+    # delete the invoice
+    * set session.runtimeData.id = session.runtimeData.sourceTxn
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/delete.json' }
+    
+    # read after delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/read-after-delete.json' }
+    
+    # delete receive payment
+    * set session.runtimeData.id = session.runtimeData.create-transaction-paymentMethod-sourceTxn.data.createTransactions_Transaction.transactionsTransactionEdge.node.id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../input/sale-invoice-payment-delete.json' }
+    
+    
+  @priority=p1 @entity=transaction @domain=transaction @type=receivepayment @region=US @testId=transaction-transaction-receivePayment-10011
+  Scenario: Delete a payment linked to invoice and credit memo
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'{ "regionName":"US", "sku": "PLUS", "defaultEntityCreation": ["CUSTOMER","ACCOUNT","ITEMS"] }'}
+    # create invoice
+    * set session.runtimeData.type = 'SALE_INVOICE'
+    * set session.runtimeData.date = session.default.today
+    * set session.runtimeData.amount = "1010.00"
+    * set session.runtimeData.rate = session.runtimeData.amount
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+        
+    # create
+    * set session.runtimeData.type = 'SALE_CREDIT'
+    * set session.runtimeData.date = session.default.today
+    * set session.runtimeData.amount = "1000.00"
+    * set session.runtimeData.rate = session.runtimeData.amount
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+    
+    # receive payment against invoice
+    * set session.runtimeData.paymentMethodId = "1"
+    * set session.runtimeData.amount = "10.00"
+    * set session.runtimeData.type = 'SALE_INVOICE_PAYMENT'
+    * set session.runtimeData.sourceType = 'CHARGE'
+    * set session.runtimeData.customerId = session.default.contact.customer.id
+    * set session.runtimeData.sourceTxn = session.runtimeData.transactions-create-all-fields.data.createTransactions_Transaction.transactionsTransactionEdge.node.id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-paymentMethod-sourceTxn.json' }
+    
+    # delete the invoice
+    * set session.runtimeData.id = session.runtimeData.sourceTxn
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/delete.json' }
+    
+    # read after delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/read-after-delete.json' }

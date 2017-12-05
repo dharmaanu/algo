@@ -1,0 +1,26 @@
+Feature:QBO Invoice CRUD
+
+  Background:
+
+  @testId=transactions-invoice-1 @domain=transactions @entity=invoice @region=US @priority=p0 @smokes
+  Scenario Outline: QBO Invoice CRUD
+
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    # store in session
+    * set session.runtimeData.type = 'SALE_INVOICE'
+    * set session.runtimeData.date = session.default.today
+    # create
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-without-account.json' }
+    # read by id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/readOne.json' }
+    # update
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/update-without-account.json' }
+    # delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/delete.json' }
+    # read after delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/read-after-delete.json' }
+
+    Examples:
+      | companyCriteria |
+      | { "regionName":"US", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","ITEMS"] } |

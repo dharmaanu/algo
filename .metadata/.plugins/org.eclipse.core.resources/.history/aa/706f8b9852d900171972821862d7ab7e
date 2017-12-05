@@ -1,0 +1,26 @@
+Feature:QBO Refund Receipt CRUD
+
+  Background:
+
+  @testId=transactions-refundreceipt-1 @domain=transactions @entity=refundreceipt @region=US @priority=p0 @smokes
+  Scenario Outline: QBO Refund Receipt CRUD
+
+    * call read('classpath:qbo-setup.feature') {companyCriteria:'<companyCriteria>'}
+
+    # store in session
+    * set session.runtimeData.type = 'SALE_REFUND'
+    * set session.runtimeData.contactId = '$default.contact.customer.id'
+    * set session.runtimeData.date = session.default.today
+    # create
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/create-with-account.json' }
+    # read by id
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/read.graphql', inputFile: '../../../shared/input/transactions/readOne.json' }
+    # update
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/update-with-account.json' }
+    # delete
+    * def result = call read('classpath:declarative-graphql-test.feature') { queryFile: '../../../shared/query/transactions/create.graphql', inputFile: '../../../shared/input/transactions/delete.json' }
+
+
+    Examples:
+      | companyCriteria |
+      | { "regionName":"US", "sku":"PLUS", "defaultEntityCreation": ["CUSTOMER","ACCOUNT","ITEMS","DEPARTMENTS"] } |
